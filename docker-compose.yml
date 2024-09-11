@@ -17,7 +17,7 @@ services:
   mysql:
     image: mysql:5.7.16
     ports:
-    - '3306:3306'
+    - '3307:3306'
     volumes:
     - ./db/data:/var/lib/mysql
     - ./db/config:/etc/mysql/conf.d
@@ -32,7 +32,7 @@ services:
     build: .
     depends_on:
     - mysql
-    image: latest
+    image: wordpress:latest
     ports:
     - '9000:9000'
     volumes:
