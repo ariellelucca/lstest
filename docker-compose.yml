@@ -1,0 +1,49 @@
+services:
+
+  localhost: #pegadinha para funcionar sites com jupiter ou que requisitem localhost pela máquina do wordpress
+    image: nginx:latest
+    ports:
+    - '80:80'
+    - '443:443'
+    volumes:
+    - ./nginx/conf.d:/etc/nginx/conf.d
+    - ./nginx/ssl/certs:/etc/ssl
+    - ./logs/nginx:/var/log/nginx
+    - ./wordpress:/var/www/html
+    links:
+    - wordpress
+    restart: always
+
+  mysql:
+    image: mysql:5.7.16
+    ports:
+    - '3306:3306'
+    volumes:
+    - ./db/data:/var/lib/mysql
+    - ./db/config:/etc/mysql/conf.d
+    - ./db/config:/etc/my.cnf.d #percona
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_ROOT_HOST=%
+    restart: always
+
+
+  wordpress:
+    build: .
+    depends_on:
+    - mysql
+    image: latest
+    ports:
+    - '9000:9000'
+    volumes:
+    - ./hosts:/etc/hosts #arquivo vazio
+    - ./wordpress:/var/www/html
+    - ./wp-config.php:/var/www/html/wp-config.php
+    - ./xdebug_profiler:/tmp/xdebug_profiler
+    - ./php/conf.ini:/usr/local/etc/php/conf.d/conf.ini
+    environment:
+      XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
+    links:
+    - mysql
+    restart: always
+

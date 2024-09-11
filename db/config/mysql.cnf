@@ -1,0 +1,4 @@
+[mysqld]
+interactive_timeout=999
+wait_timeout=999
+max_allowed_packet=9999999999999999
